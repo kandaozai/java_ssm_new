@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IPlatformBackgroundDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Platformbackgroundtable">
+    <id column="PlatformBackground_id" jdbcType="INTEGER" property="platformbackgroundId" />
+    <result column="PlatformBackground" jdbcType="VARCHAR" property="platformbackground" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    PlatformBackground_id, PlatformBackground
+  </sql>
+ 	<!-- 
+ 	
+	
+	 -->
+
+   <select id="findAll" resultMap="BaseResultMap">
+    select *from Platformbackgroundtable 
+   </select>
+ 
+
+   <!-- 查询所有 -->
+	<select id="findById" resultMap="BaseResultMap">
+		select *from Platformbackgroundtable WHERE PlatformBackground_id = #{platformbackgroundId}
+	</select>
+   
+ 
+    <select id="findByName" resultMap="BaseResultMap">
+        select *from Platformbackgroundtable where PlatformBackground=#{platformbackground}
+    </select>
+ 
+ 
+ 
+</mapper>

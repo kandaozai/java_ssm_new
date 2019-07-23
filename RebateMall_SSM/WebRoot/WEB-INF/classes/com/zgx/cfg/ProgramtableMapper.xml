@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IProgramDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Programtable">
+    <id column="Program_id" jdbcType="INTEGER" property="programId" />
+    <result column="Program" jdbcType="VARCHAR" property="program" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Program_id, Program
+  </sql>
+ 
+   <select id="findAll" resultMap="BaseResultMap">
+    select *from Programtable 
+   </select>
+  
+</mapper>

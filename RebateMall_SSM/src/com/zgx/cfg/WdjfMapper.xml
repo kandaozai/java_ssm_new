@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IWdjfDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Stotetable">
+    <!-- <id column="IntegralLogID" jdbcType="INTEGER" property="integrallogid" />
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="GetIntegral" jdbcType="INTEGER" property="getintegral" />
+    <result column="Gettime" jdbcType="TIMESTAMP" property="gettime" />
+    <result column="IntegralExplain" jdbcType="VARCHAR" property="integralexplain" /> -->
+    
+     <!-- 商品兑换记录表 -->
+     <id column="CommodityExchangeID" jdbcType="INTEGER" property="commodityexchangeid" />
+     <result column="IntegralStoreID" jdbcType="INTEGER" property="integralstoreid" />
+     <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+     <result column="ReceivingAddress" jdbcType="VARCHAR" property="receivingaddress" />
+     <result column="ConsigneeName" jdbcType="VARCHAR" property="consigneename" />
+     <result column="Telephone" jdbcType="VARCHAR" property="telephone" />
+     <result column="QQ" jdbcType="VARCHAR" property="qq" />
+     <result column="CunDatetime" jdbcType="TIMESTAMP" property="cundatetime" />
+    
+     <!-- 商品信息表 -->
+     <result column="StoreMC" jdbcType="VARCHAR" property="storemc" />
+     <result column="Integral" jdbcType="INTEGER" property="integral" />
+     <result column="picture" jdbcType="VARCHAR" property="picture" />
+     <result column="storetypexqID" jdbcType="INTEGER" property="storetypexqid" />
+     
+     
+  </resultMap>
+  <sql id="Base_Column_List">
+   CommodityExchangeID,IntegralStoreID,SignUp_id,ReceivingAddress,ConsigneeName
+   ,Telephone,QQ,CunDatetime
+   ,StoreMC,Integral,picture,storetypexqID
+  </sql>
+
+	<!-- 商品兑换详细信息 findById -->
+   <select id="findByIdQDParamint" resultMap="BaseResultMap">
+    select *
+    from commodityexchangetable 
+    INNER JOIN integralstoretable ON commodityexchangetable.IntegralStoreID= integralstoretable.IntegralStoreID
+    WHERE commodityexchangetable.CommodityExchangeID = #{whereint}
+   </select>
+  
+    <!-- 查询条条件 -->  
+  <select id="findPage" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" -->
+    select  *
+    FROM commodityexchangetable 
+    INNER JOIN integralstoretable ON commodityexchangetable.IntegralStoreID= integralstoretable.IntegralStoreID
+    WHERE  ${strwhere} ORDER BY CunDatetime DESC LIMIT ${startIndex},${pageSize} 
+  </select>
+ 
+  <select id="getTotalRow"   resultType="Integer" >  <!--  resultMap="返回结果对象" -->
+    select  COUNT(commodityexchangetable.CommodityExchangeID)
+    FROM commodityexchangetable 
+     INNER JOIN integralstoretable ON commodityexchangetable.IntegralStoreID= integralstoretable.IntegralStoreID
+    WHERE  ${strwhere} 
+  </select>
+  
+  
+  
+  
+  
+</mapper>

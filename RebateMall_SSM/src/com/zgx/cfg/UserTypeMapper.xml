@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.ISignupDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Signuptable"><!-- UserType -->
+     <id column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="SignUpName" jdbcType="VARCHAR" property="signupname" />
+    <result column="Password" jdbcType="VARCHAR" property="password" />
+    <result column="PhoneNumber" jdbcType="VARCHAR" property="phonenumber" />
+    <result column="PhoneCode" jdbcType="VARCHAR" property="phonecode" />
+    <result column="Digital" jdbcType="VARCHAR" property="digital" />
+    <result column="Mailbox" jdbcType="VARCHAR" property="mailbox" />
+    <result column="Refer" jdbcType="VARCHAR" property="refer" />
+    <result column="Headportrait" jdbcType="VARCHAR" property="headportrait" />
+    <result column="ConPassword" jdbcType="VARCHAR" property="conpassword" />
+    <result column="sex" jdbcType="BIT" property="sex" />
+    <result column="idnumber" jdbcType="VARCHAR" property="idnumber" />
+    <result column="occupation" jdbcType="VARCHAR" property="occupation" />
+    <result column="SignID" jdbcType="INTEGER" property="signid" />
+    <result column="Sum" jdbcType="INTEGER" property="sum" />
+    <result column="RebateFreeze" jdbcType="INTEGER" property="rebatefreeze" />
+    <result column="TXFreeze" jdbcType="INTEGER" property="txfreeze" />
+    <result column="YearOfBirth" jdbcType="TIMESTAMP" property="yearofbirth" />
+    <result column="EmotionalStatus_id" jdbcType="INTEGER" property="emotionalstatusId" />
+    <result column="Living" jdbcType="VARCHAR" property="living" />
+    <result column="HomeAddress" jdbcType="VARCHAR" property="homeaddress" />
+    <result column="Edition" jdbcType="INTEGER" property="edition" />
+    <result column="Bankcard" jdbcType="VARCHAR" property="bankcard" />
+    
+    
+    <!-- 另外的 -->
+    <result column="EmotionalStatus" jdbcType="VARCHAR" property="emotionalstatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    SignUp_id, SignUpName, Password, PhoneNumber, PhoneCode, Digital, Mailbox, Refer, 
+    Headportrait, ConPassword, sex, idnumber, occupation, SignID, Sum, RebateFreeze, 
+    TXFreeze, YearOfBirth, EmotionalStatus_id, Living, HomeAddress, Edition
+    ,EmotionalStatus,Bankcard
+  </sql>
+  
+
+  
+      <!-- 修改其他 --> 
+   <update id="updatePramoneQT" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      sex = #{sex},
+       EmotionalStatus_id=#{emotionalstatusId},
+       YearOfBirth=#{yearofbirth},
+       occupation=#{occupation},
+       Living=#{living},
+       HomeAddress=#{homeaddress}
+    
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+  
+  
+     <!-- 查询最后一条数据 findBySQL -->
+  <select id="findBySQL"   resultMap="BaseResultMap" >  <!--  resultMap="返回结果对象" -->
+   SELECT * FROM signuptable ORDER BY SignUp_id DESC LIMIT 1
+  </select>
+  
+  
+  
+    <!-- 修改用户头像 -->
+   <update id="updatetable" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      Headportrait = #{headportrait}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+
+
+    <!-- 修改用户名 -->
+   <update id="updatePramone" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      SignUpName = #{signupname}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+   
+   
+   
+    <!-- 修改身份证 -->
+   <update id="updatePramoneSFZ" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      idnumber = #{idnumber}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+   
+    <!-- 修改用银行卡-->
+   <update id="updatePramoneYHK" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      Bankcard = #{bankcard}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+   
+   
+    <!-- 修改电子邮箱 --> 
+   <update id="updatePramoneDZYX" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      Mailbox = #{mailbox}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+   
+   
+    <!-- 修改用户手机号码 -->
+   <update id="updatePramthree" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      PhoneNumber = #{phonenumber}
+    </set>
+    where SignUp_id = #{signupId}
+   </update> 
+	 
+   
+   <select id="findByName" resultMap="BaseResultMap">
+     select signuptable.*,emotionalstatustable.EmotionalStatus  
+     from signuptable 
+     INNER JOIN emotionalstatustable ON signuptable.EmotionalStatus_id=emotionalstatustable.EmotionalStatus_id
+     where SignUpName=#{signupname}
+   </select> 
+   
+    <!-- 修改用户金额 红包加+2 -->
+   <update id="updatetow" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      signuptable.Sum=(signuptable.Sum+2)
+    </set>
+    where SignUp_id = #{whereint}
+   </update> 
+   
+    <!-- 修改版次号 +1 -->
+   <update id="updateBCH" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+      signuptable.Edition=(signuptable.Edition+1)
+    </set>
+    where SignUp_id = #{whereint}
+   </update> 
+   
+   
+    <!--  <![CDATA[  ]]> -->
+    <!-- 修改用户金额 任务加+？ #{signid} 逻辑不好 -->
+     <update id="updaterewu" parameterType="com.zgx.po.Signuptable">
+    update signuptable
+    <set>
+     signuptable.Sum = signuptable.Sum  +   #{intwhere}
+    </set>
+    where SignUp_id = #{intwhereA}
+   </update>
+   
+   
+   <!-- 新增用户   -->
+     <insert id="insert" parameterType="com.zgx.po.Signuptable"  >
+    insert into signuptable
+    (SignUpName,Password,PhoneNumber,Digital,Mailbox,SignID,EmotionalStatus_id,Edition,Sum,RebateFreeze,TXFreeze,sex)
+    values 
+    (#{signupname},#{password},#{phonenumber},#{digital},#{mailbox},#{signid},1,1,4,0,0,1) 
+   </insert> 
+   
+   <!-- 删除用户 前台用不到吧  -->
+  <delete id="deleteById" parameterType="com.zgx.po.Signuptable">
+        delete from signuptable where SignUp_id = #{signupId}
+   </delete> 
+
+   <!-- ORDER BY xxxx DESC -->
+   <select id="findAll" resultMap="BaseResultMap">
+    select *from signuptable  
+   </select> 
+
+
+   <!-- findById  -->
+   <select id="findByIdparmint" resultMap="BaseResultMap">
+      select signuptable.*,emotionalstatustable.EmotionalStatus  
+     from signuptable 
+     INNER JOIN emotionalstatustable ON signuptable.EmotionalStatus_id=emotionalstatustable.EmotionalStatus_id
+    WHERE signuptable.SignUp_id = #{whereint}
+   </select> 
+
+
+
+</mapper>

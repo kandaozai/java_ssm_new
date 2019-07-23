@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.ISigntDao">
+	<resultMap id="BaseResultMap" type="com.zgx.po.Signtable">
+		<result column="SignID" jdbcType="INTEGER" property="signid" />
+		<result column="ResetTime" jdbcType="DATE" property="resettime" />
+		<result column="SignTime" jdbcType="DATE" property="signtime" />
+		<result column="SignIntegral" jdbcType="INTEGER" property="signintegral" />
+		<result column="Integral" jdbcType="INTEGER" property="integral" />
+		<result column="Signdate" jdbcType="INTEGER" property="signdate" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		SignID, ResetTime, SignTime, SignIntegral, Integral, Signdate
+	</sql>
+	
+	<!-- 新增且获取新增ID  -->
+   <insert id="insertint" parameterType="com.zgx.po.Signtable"  >
+        
+        insert into signintable (ResetTime, SignTime,SignIntegral, Integral, Signdate)
+		values (#{resettime,jdbcType=DATE},#{signtime,jdbcType=DATE},
+		#{signintegral,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}, #{signdate,jdbcType=INTEGER} )
+       <selectKey resultType="java.lang.Integer" keyProperty="signid" order="AFTER">
+           SELECT LAST_INSERT_ID() AS signid
+        </selectKey>
+   </insert>
+   
+   <!-- 删除对应角色签到表 -->
+	<delete id="deleteById" parameterType="com.zgx.po.Signtable">
+		delete from signintable where SignID = #{signid}
+	</delete>
+	
+	
+	
+
+	<!-- 修改每个月清空积分  -->
+	<update id="insertReturnId" parameterType="com.zgx.po.Signtable">
+		update signintable
+		<set>
+			SignIntegral=0,
+			Signdate=0, 
+			ResetTime=#{resettime}
+		</set>
+		where signintable.SignID= #{signid}
+	</update>
+	
+	<!-- 查询所有 -->
+	<select id="findByIdQDparmint" resultMap="BaseResultMap">
+		select *from signintable WHERE signintable.SignID = #{intwhere}
+	</select>
+	
+	
+	<!-- 修改 每日签到 -->
+	<update id="update" parameterType="com.zgx.po.Signtable">
+		update signintable
+		<set>
+			SignIntegral=(SignIntegral+1),
+			Signdate=(Signdate+1),
+			SignTime=#{signtime}
+		</set>
+		where signintable.SignID= #{signid}
+	</update>
+	
+	
+</mapper>

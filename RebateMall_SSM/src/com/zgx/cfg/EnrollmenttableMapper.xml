@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IEnrollmentDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Enrollmenttable">
+    <id column="Enrollment_id" jdbcType="INTEGER" property="enrollmentid" />
+    <result column="PlatformBackground_id" jdbcType="INTEGER" property="platformbackgroundid" />
+    <result column="Deadline_id" jdbcType="INTEGER" property="deadlineid" />
+    <result column="Program_id" jdbcType="INTEGER" property="programid" />
+    <result column="EnrName" jdbcType="VARCHAR" property="enrname" />
+    <result column="PhoneNumber" jdbcType="VARCHAR" property="phonenumber" />
+    <result column="EnrUsers" jdbcType="VARCHAR" property="enrusers" />
+    <result column="InvestJer" jdbcType="VARCHAR" property="investjer" />
+    <result column="InvestDate" jdbcType="TIMESTAMP" property="investdate" />
+    <result column="Note" jdbcType="VARCHAR" property="note" />
+    <result column="Certificate" jdbcType="VARCHAR" property="certificate" />
+    <result column="InvestPlatform" jdbcType="VARCHAR" property="investplatform" />
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="stateSHSB" jdbcType="INTEGER" property="stateshsb" />
+    
+    <result column="CompanyID" jdbcType="INTEGER" property="companyid" />
+    <!-- 外表（写在一起，不用以前的了）         -->
+     <result column="PlatformBackground" jdbcType="VARCHAR" property="platformbackground" />
+     <result column="Deadline" jdbcType="VARCHAR" property="deadline" />
+     <result column="Program" jdbcType="VARCHAR" property="program" />
+     
+     <!-- 公司的部分 -->
+      <result column="reward" jdbcType="DECIMAL" property="reward" />
+      <result column="CompanyRebate" jdbcType="DECIMAL" property="companyrebate" />
+    
+  </resultMap>
+  <sql id="Base_Column_List">
+    Enrollment_id, PlatformBackground_id, Deadline_id, Program_id, EnrName, PhoneNumber, 
+    EnrUsers, InvestJer, InvestDate, Note, Certificate, InvestPlatform 
+    ,PlatformBackground,Deadline,Program,SignUp_id,stateSHSB
+  </sql>
+  
+  	<!-- 查询对应年月的投资金额    -->
+   <select id="findByIdAndTime" resultType="java.math.BigDecimal" >
+   SELECT SUM(Enrollmenttable.InvestJer) 
+   FROM enrollmenttable WHERE DATE_FORMAT(enrollmenttable.InvestDate, '%Y%m') = DATE_FORMAT('${wheredate}', '%Y%m') 
+    AND enrollmenttable.SignUp_id= ${whereint}
+   </select>
+   
+   <!-- 查询对应年月的投资金额的收益    -->
+   <select id="findByIdAndTimeSY" resultType="java.math.BigDecimal" >
+   SELECT SUM(Enrollmenttable.InvestJer*(companytable.reward+companytable.CompanyRebate)) 
+   FROM enrollmenttable 
+   INNER JOIN companytable ON enrollmenttable.CompanyID = companytable.CompanyID 
+    WHERE DATE_FORMAT(enrollmenttable.InvestDate, '%Y%m') = DATE_FORMAT('${wheredate}', '%Y%m') 
+    AND enrollmenttable.SignUp_id= ${whereint}
+     AND enrollmenttable.stateSHSB=2
+   </select>
+  
+  	<!-- 商品兑换详细信息 findById -->
+   <select id="findByIdQDParamint" resultMap="BaseResultMap">
+    select  Enrollmenttable.*,PlatformBackgroundtable.PlatformBackground, Deadlinetable.Deadline, Programtable.Program
+    FROM Enrollmenttable 
+    INNER JOIN PlatformBackgroundtable ON Enrollmenttable.PlatformBackground_id = PlatformBackgroundtable.PlatformBackground_id 
+    INNER JOIN Deadlinetable ON Enrollmenttable.Deadline_id = Deadlinetable.Deadline_id 
+    INNER JOIN Programtable ON Enrollmenttable.Program_id = Programtable.Program_id
+    WHERE Enrollmenttable.Enrollment_id = #{whereint}
+   </select>
+  
+     <!-- 查询条条件 -->  
+  <select id="findPage" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" -->
+    select  Enrollmenttable.*,PlatformBackgroundtable.PlatformBackground, Deadlinetable.Deadline, Programtable.Program
+    FROM Enrollmenttable 
+    INNER JOIN PlatformBackgroundtable ON Enrollmenttable.PlatformBackground_id = PlatformBackgroundtable.PlatformBackground_id 
+    INNER JOIN Deadlinetable ON Enrollmenttable.Deadline_id = Deadlinetable.Deadline_id 
+    INNER JOIN Programtable ON Enrollmenttable.Program_id = Programtable.Program_id
+    WHERE  ${strwhere} ORDER BY Enrollmenttable.Enrollment_id DESC LIMIT ${startIndex},${pageSize} 
+  </select>
+ 
+
+  <select id="getTotalRow"   resultType="Integer" >  <!--  resultMap="返回结果对象" -->
+    select  COUNT(Enrollmenttable.Enrollment_id) 
+    FROM Enrollmenttable 
+    INNER JOIN PlatformBackgroundtable ON Enrollmenttable.PlatformBackground_id = PlatformBackgroundtable.PlatformBackground_id 
+    INNER JOIN Deadlinetable ON Enrollmenttable.Deadline_id = Deadlinetable.Deadline_id 
+    INNER JOIN Programtable ON Enrollmenttable.Program_id = Programtable.Program_id
+    WHERE  ${strwhere} 
+  </select>
+  
+	
+	<!-- parameterType:声明输入参数的类型 -->
+	<!-- resultType:声明输出结果的类型，应该填写pojo的全路径 -->
+	<!-- 返利累计收益     乘以 4.5%     需要完善  resultType="Integer"  -->
+	<select id="findBySum" resultType="String" >
+	 SELECT SUM(enrollmenttable.InvestJer)*0.045 FROM enrollmenttable where stateSHSB=2 and SignUp_id = #{whereint}
+    </select>
+	 
+	 
+	 <!-- （自身的）投资总额      SQL语句求某字段的总和  = 返利累计收益  -->
+	 <select id="findByLump" resultType="String" >
+	 SELECT SUM(enrollmenttable.InvestJer) FROM enrollmenttable where  stateSHSB=2 and SignUp_id = #{whereint}
+    </select>
+	 
+	 
+	 
+	<!-- 总资产= 投资平台总额   +  返利累计收益  返回String  -->
+	<select id="findByTotal" resultType="String" >
+	 SELECT SUM(enrollmenttable.InvestJer) + SUM(enrollmenttable.InvestJer)*0.045 FROM  enrollmenttable
+	 where stateSHSB=2 
+    </select>
+	
+	 <!-- 新增投资管理信息 -->
+    <insert id="insert" parameterType="com.zgx.po.Enrollmenttable"  >
+    insert into Enrollmenttable
+    (EnrName,PhoneNumber,EnrUsers,InvestJer,InvestDate,PlatformBackground_id,Deadline_id,Program_id,Note,Certificate,SignUp_id,InvestPlatform,stateSHSB,CompanyID)
+    values (#{enrname},#{phonenumber},#{enrusers},#{investjer},#{investdate},#{platformbackgroundid},#{deadlineid},#{programid},#{note},#{certificate},#{signupId},#{investplatform},1,#{companyid}) <!-- 可以设置输入数据类型 #{usermc,jdbcType=VARCHAR} -->
+   </insert>
+	
+   <select id="findByName" resultMap="BaseResultMap">
+    select *from Enrollmenttable where EnrName=#{enrname}
+   </select>
+   
+   	<!-- 查询 -->
+   <select id="findById" resultMap="BaseResultMap">
+      select *from Enrollmenttable WHERE Enrollment_id=#{enrollmentid}
+   </select>
+	
+  
+</mapper>

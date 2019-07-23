@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IWdjfjlstoreDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Stotetable">
+    <id column="IntegralLogID" jdbcType="INTEGER" property="integrallogid" />
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="GetIntegral" jdbcType="INTEGER" property="getintegral" />
+    <result column="Gettime" jdbcType="TIMESTAMP" property="gettime" />
+    <result column="IntegralExplain" jdbcType="VARCHAR" property="integralexplain" />
+    
+    <!-- 签到表 -->
+     <result column="SignID" jdbcType="INTEGER" property="signid" />
+     <result column="ResetTime" jdbcType="TIMESTAMP" property="resettime" />
+     <result column="SignTime" jdbcType="TIMESTAMP" property="signtime" />
+     <result column="SignIntegral" jdbcType="INTEGER" property="signintegral" />
+     <result column="Integral" jdbcType="INTEGER" property="integral" />
+     <result column="Signdate" jdbcType="INTEGER" property="signdate" />
+     
+  </resultMap>
+  <sql id="Base_Column_List">
+    IntegralLogID, SignUp_id, GetIntegral, Gettime, IntegralExplain,
+    SignID,ResetTime,SignTime,SignIntegral,Integral,Signdate
+  </sql>
+   
+  
+  <!-- 是不是少了时间  wdjfjl  时间在数据库写了自动编译 -->
+  <insert id="insert" parameterType="com.zgx.po.Stotetable"  >
+    insert into integrallogtable(SignUp_id,GetIntegral,IntegralExplain)
+    values (#{signupId},#{getintegral},#{integralexplain}) <!-- 可以设置输入数据类型 #{usermc,jdbcType=VARCHAR} -->
+   </insert>
+  
+
+     <!-- 查询条条件 -->  
+  <select id="findPage" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" -->
+    select  *
+    FROM integrallogtable 
+    WHERE  ${strwhere} ORDER BY Gettime DESC LIMIT ${startIndex},${pageSize} 
+  </select>
+ 
+  <select id="getTotalRow"   resultType="Integer" >  <!--  resultMap="返回结果对象" -->
+    select  COUNT(integrallogtable.IntegralLogID)
+    FROM integrallogtable 
+    WHERE  ${strwhere} 
+  </select>
+  
+  
+  
+   <select id="findById" resultMap="BaseResultMap">
+    select signintable.*
+    from signintable WHERE signintable.SignID=#{signid}
+   </select>
+  
+  
+  
+</mapper>

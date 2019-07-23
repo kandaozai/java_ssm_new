@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.XlkIStoreDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Stotetable">
+    <id column="IntegralStoreID" jdbcType="INTEGER" property="integralstoreid" />
+    <result column="StoreMC" jdbcType="VARCHAR" property="storemc" />
+    <result column="Integral" jdbcType="INTEGER" property="integral" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="storetypexqID" jdbcType="INTEGER" property="storetypexqid" />
+    
+    <!-- 类型 storetypexqID MC StoretyleID  -->
+    <result column="MC" jdbcType="VARCHAR" property="mc" />
+    <result column="StoretyleID" jdbcType="INTEGER" property="storetyleid" />
+    
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="ReceivingAddress" jdbcType="VARCHAR" property="receivingaddress" />
+    <result column="ConsigneeName" jdbcType="VARCHAR" property="consigneename" />
+    <result column="Telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="QQ" jdbcType="VARCHAR" property="qq" />
+    <result column="CunDatetime" jdbcType="VARCHAR" property="cundatetime" />
+    
+  </resultMap>
+
+  <sql id="Base_Column_List">
+   IntegralStoreID,StoreMC,Integral,picture,storetypexqID
+   ,MC,StoretyleID  
+   ,SignUp_id,ReceivingAddress,ConsigneeName,Telephone,QQ,CunDatetime
+  </sql> 
+  
+ <!-- 
+	
+	
+	private String getTotalRow = "SELECT COUNT(integralstoretable.IntegralStoreID) FROM integralstoretable  WHERE ?";
+	
+  
+	private String findById = "SELECT * FROM integralstoretable WHERE integralstoretable.IntegralStoreID=?";
+	private String deleteById = "DELETE FROM integralstoretable WHERE integralstoretable.IntegralStoreID=?";
+	private String update = "UPDATE integralstoretable SET StoreMC=?,Integral=?,picture=? WHERE IntegralStoreID=?";
+	
+   -->
+   
+   
+   
+   <!-- 新增记录兑换商品记录 -->
+    <insert id="insert" parameterType="com.zgx.po.Stotetable"  >
+    insert into commodityexchangetable
+    (IntegralStoreID,SignUp_id,ReceivingAddress,ConsigneeName,Telephone,QQ,CunDatetime)
+    values 
+    (#{integralstoreid},#{signupId},#{receivingaddress},#{consigneename},#{telephone},#{qq},NOW()) 
+   </insert> 
+   
+    <!-- 修改非签到积分 findBySQL原 -->
+	<update id="findBySQLParam" parameterType="com.zgx.po.Stotetable">
+		update signintable
+		<set>
+			Integral=#{whereintA}
+		</set>
+		where signintable.SignID= #{whereintB}
+	</update>
+   
+   
+  
+  <!-- 修改签到积分 findByName原 -->
+	<update id="findByNameParam" parameterType="com.zgx.po.Stotetable">
+		update signintable
+		<set>
+			SignIntegral=#{whereintA}
+		</set>
+		where signintable.SignID= #{whereintB}
+	</update>
+  
+  
+	<!-- 修改签到积分为0 findByIdQD原 -->
+	<update id="findByIdQDParam" parameterType="com.zgx.po.Stotetable">
+		update signintable
+		<set>
+			SignIntegral=0
+		</set>
+		where signintable.SignID= #{whereint}
+	</update>
+ 
+  
+  
+  <!-- 查询 -->
+  <select id="findAllstr" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" ORDER BY CompanyID DESC -->
+    select  integralstoretable.*,storetypexq.*,(SELECT COUNT(commodityexchangetable.CommodityExchangeID)  FROM commodityexchangetable  WHERE commodityexchangetable.IntegralStoreID=integralstoretable.IntegralStoreID)AS intzhi 
+    FROM  integralstoretable  
+    INNER JOIN   storetypexq ON integralstoretable.storetypexqID= storetypexq.storetypexqID 
+    WHERE  storetypexq.MC = #{strwhere}  
+  </select>
+   
+  <!-- 类型 --> 
+   <select id="findAll" resultMap="BaseResultMap">
+   SELECT * FROM storetyle 
+   </select>
+   
+   
+  <!-- 分类查询findBySQLone -->
+   <select id="findBySQLonePA" resultMap="BaseResultMap">
+   <if test="whereint == 1 ">
+     SELECT * FROM storetypexq WHERE storetypexq.StoretyleID = 1
+   </if>
+   <if test="whereint == 2  ">
+     SELECT * FROM storetypexq WHERE storetypexq.StoretyleID = 2
+   </if>
+     <if test="whereint == 3 ">
+     SELECT * FROM storetypexq WHERE storetypexq.StoretyleID = 3
+   </if>
+   
+   <!-- 查询商品信息 4 -->
+   <if test="whereint == 4 ">
+   SELECT integralstoretable.*,(SELECT COUNT(commodityexchangetable.CommodityExchangeID)  FROM commodityexchangetable  WHERE commodityexchangetable.IntegralStoreID=integralstoretable.IntegralStoreID)AS intzhi FROM integralstoretable LIMIT 0,4
+   <!--   SELECT * FROM integralstoretable limit 0,4 -->
+   </if>
+   
+   <!-- 查询商品信息 8 -->
+   <if test="whereint == 5  ">
+     SELECT integralstoretable.*,(SELECT COUNT(commodityexchangetable.CommodityExchangeID)  FROM commodityexchangetable  WHERE commodityexchangetable.IntegralStoreID=integralstoretable.IntegralStoreID)AS intzhi  FROM integralstoretable  ORDER  BY  RAND()  LIMIT   8
+   </if>
+   
+   </select>
+  
+</mapper>

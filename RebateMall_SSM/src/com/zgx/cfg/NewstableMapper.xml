@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.InewsDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Newstable">
+    <id column="NewsID" jdbcType="INTEGER" property="newsid" />
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="Status" jdbcType="TINYINT" property="status" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="Sendingtime" jdbcType="TIMESTAMP" property="sendingtime" />
+  </resultMap>
+  
+	
+  <sql id="Base_Column_List">
+    NewsID, SignUp_id, Status, content, Sendingtime
+  </sql>
+  
+
+	<update id="update" parameterType="com.zgx.po.Newstable">
+    update newstable
+    <set>
+       STATUS=1
+    </set>
+    where NewsID = #{newsid}
+  </update>
+	
+	
+	<insert id="insert" parameterType="com.zgx.po.Newstable">
+     insert into newstable (SignUp_id,Status,content,Sendingtime )
+     values (#{signupId}, #{status}, #{content},NOW())
+    </insert>
+	
+	 <!-- 查询条条件 findPage -->
+  <select id="findPagepramo" resultMap="BaseResultMap"  >  
+    select  newstable.*
+    FROM   newstable 
+    WHERE    ${strwhere}  ORDER BY Sendingtime DESC,NewsID DESC 
+  </select>
+	
+	<select id="findAll" resultMap="BaseResultMap">
+      select *from newstable 
+    </select>
+    
+    <!-- 删除信息 deleteById-->
+   <delete id="deleteByIdParam" parameterType="com.zgx.po.Newstable">
+        delete from newstable where NewsID = #{whereint}
+   </delete>
+	
+ 
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.ICompanyDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.Conpanytable">
+    <id column="CompanyID" jdbcType="INTEGER" property="companyid" />
+    <result column="Companyname" jdbcType="VARCHAR" property="companyname" />
+    <result column="Registeredcapital" jdbcType="INTEGER" property="registeredcapital" />
+    <result column="Telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="customerservicehotline" jdbcType="VARCHAR" property="customerservicehotline" />
+    <result column="mailbox" jdbcType="VARCHAR" property="mailbox" />
+    <result column="Address" jdbcType="VARCHAR" property="address" />
+    <result column="platformyear" jdbcType="VARCHAR" property="platformyear" />
+    <result column="Projecttype" jdbcType="VARCHAR" property="projecttype" />
+    <result column="reward" jdbcType="VARCHAR" property="reward" />
+    <result column="Servicelife" jdbcType="VARCHAR" property="servicelife" />
+    <result column="Safeguardmode" jdbcType="VARCHAR" property="safeguardmode" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="InvestmentrequirementsID" jdbcType="INTEGER" property="investmentrequirementsid" />
+    <result column="CompanyRebate" jdbcType="VARCHAR" property="companyrebate" />
+    <result column="startUsing" jdbcType="BIT" property="startusing" />
+    <result column="website" jdbcType="VARCHAR" property="website" />
+    <result column="platformpayment" jdbcType="VARCHAR" property="platformpayment" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    CompanyID, Companyname, Registeredcapital, Telephone, customerservicehotline, mailbox, 
+    Address, platformyear, Projecttype, reward, Servicelife, Safeguardmode, picture, 
+    InvestmentrequirementsID, CompanyRebate, startUsing, website, platformpayment
+  </sql>
+  
+  
+<!-- 	
+	private String edit="UPDATE companytable SET Companyname=?,Registeredcapital=? , Telephone=?,Customerservicehotline=? ,Mailbox=?,Address=? , Platformyear=?,Platformpayment=? ,Projecttype=?,Reward=? , Servicelife=?,Safeguardmode=? ,Picture=? WHERE CompanyID=?";
+	private String deleteById="DELETE FROM companytable WHERE CompanyID=?"; -->
+	
+  
+   <select id="findAll" resultMap="BaseResultMap">
+    select *from companytable  <!-- ORDER BY CompanyID DESC -->
+   </select>
+   
+  <!-- 查询条条件findBySQL1 4条  &&-and -->
+  <select id="findBySQLoneo" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" ORDER BY CompanyID DESC -->
+    select companytable.*
+    FROM   companytable 
+    WHERE   <![CDATA[
+    (companytable.startUsing = TRUE ) && ( companytable.Registeredcapital > 10000 )
+     ]]> Limit  0,4
+  </select>
+  
+    <!-- 查询条条件findBySQL2 4条 -->
+  <select id="findBySQLtwoo" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" ORDER BY CompanyID DESC -->
+    select  companytable.*
+    FROM  companytable 
+    WHERE   <![CDATA[
+    ( companytable.startUsing = TRUE ) && ( 5000 < companytable.Registeredcapital )  && ( companytable.Registeredcapital <= 10000 )
+     ]]>Limit  0,4
+  </select>
+  
+  <!-- 术语CDATA 指的是不应由 XML 解析器进行解析的文本数据 -->
+     <!-- 查询条条件findBySQL3 8条-->
+  <select id="findBySQLthreeo" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" ORDER BY CompanyID DESC -->
+    select  companytable.*
+    FROM   companytable 
+    WHERE  <![CDATA[
+    (companytable.startUsing = TRUE) &&  (0 <= companytable.Registeredcapital)  &&  (companytable.Registeredcapital <= 5000)
+      ]]>Limit  0,8
+  </select>
+  
+   
+       <!-- 查询条条件 -->
+  <select id="findPage" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" ORDER BY CompanyID DESC -->
+    select  companytable.*
+    FROM  companytable 
+    WHERE   ${strwhere}  LIMIT ${startIndex},${pageSize}
+  </select>
+ 
+  <select id="getTotalRow"   resultType="Integer" >  <!--  resultMap="返回结果对象" -->
+    select  COUNT(companytable.CompanyID) 
+    FROM companytable   
+    WHERE  ${strwhere}
+  </select>
+  
+      <!-- 新增公司信息 (前台没公司新增吧) -->
+   <insert id="insert" parameterType="com.zgx.po.Conpanytable"  >
+    insert into companytable(Companyname,Registeredcapital,Telephone,Customerservicehotline,Mailbox,Address,Platformyear,Platformpayment,Projecttype,Reward,Servicelife,Safeguardmode,Picture)
+    values (#{companyname},#{registeredcapital},#{telephone},#{customerservicehotline},#{mailbox},#{address},#{platformyear},#{platformpayment},#{projecttype},#{reward},#{servicelife},#{safeguardmode},#{picture}) <!-- 可以设置输入数据类型 #{usermc,jdbcType=VARCHAR} -->
+   </insert>
+  
+   <select id="findById" resultMap="BaseResultMap">
+    select *from companytable WHERE companytable.CompanyID=#{companyid}
+   </select>
+  
+
+</mapper>

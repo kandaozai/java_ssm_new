@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgx.mapper.IRenWuDao">
+  <resultMap id="BaseResultMap" type="com.zgx.po.RenWutable">
+    <id column="taskID" jdbcType="INTEGER" property="taskid" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="reward" jdbcType="VARCHAR" property="reward" />
+    <result column="starttime"  jdbcType="TIMESTAMP" property="starttime" /><!-- TIMESTAMP  时间戳  公开数据库中自动生成的唯一二进制数字的数据类型 -->
+    <result column="term" jdbcType="TIMESTAMP" property="term" />
+    <result column="Requirement" jdbcType="VARCHAR" property="requirement" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="stateYWX" jdbcType="INTEGER" property="stateywx" />
+    <!-- 任务记录   taskLogID  taskID  SignUp_id  lagstate  LJtime -->
+    <result column="taskLogID" jdbcType="INTEGER" property="tasklogid" />
+    <result column="SignUp_id" jdbcType="INTEGER" property="signupId" />
+    <result column="lagstate" jdbcType="INTEGER" property="lagstate" />
+    <result column="LJtime" jdbcType="TIMESTAMP" property="ljtime" />
+    <!-- ShenheID  TaskLogID  Tupian  SHstate -->
+    
+    <result column="ShenheID" jdbcType="INTEGER" property="shenheid" />
+    <result column="Tupian" jdbcType="INTEGER" property="tupian" />
+    <result column="SHstate" jdbcType="INTEGER" property="shstate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    taskID, content, reward, starttime, term, Requirement, state
+    ,taskLogID,SignUp_id,lagstate,LJtime,ShenheID,Tupian,SHstate
+  </sql>  
+      <!-- 修改审核图片（上传）  难获取ShenheID 用taskLogID代替  一样的效果 -->
+	<update id="updateTP" parameterType="com.zgx.po.RenWutable">
+		update shenhetable
+		<set>
+			Tupian=#{tupian}
+		</set>
+		 WHERE  taskLogID=#{tasklogid}
+	</update> 
+
+     <!-- 修改      结束日期小于当前日期的任务  为无效  -->
+	<update id="updateWX" parameterType="com.zgx.po.RenWutable">
+		update tasktable
+		<set>
+			stateYWX=1
+		</set>
+		 WHERE  NOW()  <![CDATA[ > ]]>  tasktable.term 
+	</update> 
+  
+  
+ 
+   <!-- 修改任务记录状态 为2  已领取  insertReturnId  -->
+	<update id="updateLQ" parameterType="com.zgx.po.RenWutable">
+		update tasklogtable
+		<set>
+			lagstate=2,
+			LJtime=NOW()
+		</set>
+		where  taskLogID=${intwhere}
+	</update>    
+	
+	<!-- 修改任务记录状态 为3  已审核    只有个人任务用      公司任务是在后台审核的  不用taskLogID作为条件了  -->
+	<update id="updateYSH" parameterType="com.zgx.po.RenWutable">
+		update tasklogtable
+		<set>
+			lagstate=3
+		</set>
+		where  taskID=${intwhere} and SignUp_id=${intwhereA}
+	</update>  
+  
+
+ 
+  <!-- 新增任务记录（个人任务 2）就是新增时 就未审核（1） -->
+  <insert id="insertGRRW_WSH" parameterType="com.zgx.po.RenWutable"  >
+    insert into tasklogtable(taskID,SignUp_id,lagstate)
+    values (#{intwhere},#{intwhereA},1)
+  </insert> 
+  
+    <!-- 新增任务记录（个人任务 1）就是新增时 就审核（3）了  -->
+  <insert id="insertGRRW_SH" parameterType="com.zgx.po.RenWutable"  >
+    insert into tasklogtable(taskID,SignUp_id,lagstate)
+    values (#{intwhere},#{intwhereA},3)
+  </insert> 
+  
+  
+  
+     <!-- 新增任务审核表  -->
+  <insert id="insertSH" parameterType="com.zgx.po.RenWutable"  >
+    insert into shenhetable(TaskLogID,SHstate)
+    values (#{tasklogid},1)
+  </insert> 
+ 
+
+  <!-- 查询条条件  findPage renWulogServiceImpl  -->
+  <select id="findPagepramo" resultMap="BaseResultMap"  >  
+    select tasklogtable.*,tasktable.*,(SELECT shenhetable.SHstate FROM shenhetable WHERE shenhetable.TaskLogID=tasklogtable.taskLogID) AS SHstate
+    FROM  tasklogtable 
+    INNER JOIN tasktable ON tasklogtable.taskID=tasktable.taskID 
+    WHERE   ${strwhere} ORDER BY   tasklogtable.taskLogID DESC 
+  </select>
+
+   <!-- 审核数据查询  renWulogServiceImpl -->
+   <select id="findByIdo" resultMap="BaseResultMap">
+    select *from shenhetable WHERE shenhetable.TaskLogID=#{idone}
+   </select>
+
+
+
+   <!-- 查询所有 两个参数  -->
+	 <select id="findByIdtow" resultMap="BaseResultMap">
+		select *from tasklogtable WHERE
+		<![CDATA[  taskID = #{idone} && tasklogtable.SignUp_id= #{idtwo} ]]>
+	</select> 
+	
+	 <!-- 新增任务记录 -->
+  <insert id="insert" parameterType="com.zgx.po.RenWutable"  >
+    insert into tasklogtable(taskID,SignUp_id,lagstate)
+    values (#{taskid},#{signupId},#{lagstate})
+     <selectKey resultType="java.lang.Integer" keyProperty="tasklogid" order="AFTER">
+           SELECT LAST_INSERT_ID() AS tasklogid
+     </selectKey>
+  </insert> 
+  
+   
+  
+  
+    <!-- 修改-->
+	<update id="update" parameterType="com.zgx.po.RenWutable">
+		update tasktable
+		<set>
+			StoreMC=0
+		</set>
+		where 
+		 <![CDATA[ DATE_FORMAT(term, '%Y%m%d') <= DATE_FORMAT(NOW(), '%Y%m%d') ]]>
+	</update> 
+	
+	
+	 <!-- 查询条条件 -->
+  <select id="findPagelw" resultMap="BaseResultMap"  > 
+    select  *
+    FROM tasktable
+    WHERE    ${strwhere} ORDER BY tasktable.state DESC
+  </select> 
+		 
+  <select id="findPagenull" resultMap="BaseResultMap"  >  <!--  resultMap="返回结果对象" -->
+    select  *
+    FROM tasktable
+    WHERE    state=1 ORDER BY tasktable.state DESC
+  </select>
+		 
+  
+  
+
+
+</mapper>

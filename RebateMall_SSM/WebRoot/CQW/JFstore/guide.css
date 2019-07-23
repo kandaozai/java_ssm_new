@@ -1,0 +1,245 @@
+#new-user-guide-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.6;
+    z-index: 9999;
+}
+
+#new-user-guide-step1 {
+    top: 830px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -598px;
+}
+
+#new-user-guide-step2 {
+    top: 1420px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -598px;
+}
+
+#new-user-guide-step3 {
+    top: 400px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -600px;
+}
+
+#new-user-guide-step4 {
+    top: 665px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -600px;
+}
+
+#new-user-guide-step5 {
+    top: 1358px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -636px;
+}
+
+#button-step1 {
+    position: absolute;
+    top: 192px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#button-step1:hover {
+    background: #eee;
+}
+
+#button-step2 {
+    position: absolute;
+    top: 229px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#button-step2:hover {
+    background: #eee;
+}
+
+#button-step3 {
+    position: absolute;
+    top: 275px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#button-step3:hover {
+    background: #eee;
+}
+
+#button-step4 {
+    position: absolute;
+    top: 336px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#button-step4:hover {
+    background: #eee;
+}
+
+#button-step5 {
+    position: absolute;
+    right: 1px;
+    top: 117px;
+    background-color: #fe7272;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+}
+
+#center-guide-step1 {
+    top: 345px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -600px;
+}
+
+#center-guide-step2 {
+    top: 250px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -320px;
+}
+
+#center-guide-step3 {
+    top: 280px;
+    z-index: 10000;
+    position: absolute;
+    left: 50%;
+    margin-left: -310px;
+}
+
+#center-step1 {
+    position: absolute;
+    top: 303px;
+    right: 80px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#center-step1:hover {
+    background: #eee;
+}
+
+#center-step2 {
+    position: absolute;
+    bottom: 10px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#center-step2:hover {
+    background: #eee;
+}
+
+#center-step3 {
+    position: absolute;
+    bottom: 10px;
+    right: 50px;
+    background-color: #fff;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fe7272;
+    border: none;
+    font-weight: bold;
+}
+
+#center-step3:hover {
+    background: #eee;
+}
+
+#button-close {
+    position: absolute;
+    top: 55px;
+    right: 50px;
+    background: none;
+    width: 90px;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+}
